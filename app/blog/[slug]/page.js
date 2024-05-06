@@ -1,12 +1,31 @@
 import { notFound } from "next/navigation"
+import { getPost } from "@/lib/posts"
 
-export default function BlogPage({ params }) {
+export async function generateMetadata({ params }) {
 
-    if (!['first', 'second'].includes(params.slug)) {
+    try {
+        const { frontmatter } = await getPost(params.slug)
+        return frontmatter
+    } catch (e) {
+        
+    }
+}
+
+export default async function BlogPage({ params }) {
+
+    let post
+    
+    try {
+       post = await getPost(params.slug) 
+    } catch (e) {
         notFound()
     }
+    
 
     return(
-        <div>yoo {params.slug}</div>
+        <article className="prose dark:prose-invert">
+            {post.content}
+        </article>
+        
     )
 }
