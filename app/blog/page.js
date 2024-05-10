@@ -1,3 +1,5 @@
+import H1 from '@/components/h1'
+import Pagination from '@/components/pagination'
 import { getPosts } from '@/lib/posts'
 import Link from 'next/link'
 
@@ -6,14 +8,18 @@ export default async function BlogPostsPage({ searchParams }) {
 
     const tags = searchParams.tags?.split(',')
     const order = searchParams.order ?? 'newest'
-    const posts = await getPosts({ 
+    const page = searchParams.page ?? 1
+    const limit = searchParams.limit ?? 3
+    const { posts, pageCount } = await getPosts({ 
         tags,
-        newest: order === 'newest'
+        newest: order === 'newest',
+        page,
+        limit
     })
 
     return(
        <div>
-            <h1 className='mb-8 text-xl'>Recent posts</h1>
+            <H1 className='mb-8 text-xl'>Recent posts</H1>
             <div className='mb-8 text-lg text-gray-600 dark:text-gray-400'>
                 Stay up to date with most recent posts
             </div>
@@ -40,6 +46,11 @@ export default async function BlogPostsPage({ searchParams }) {
                     )
                 })}
             </ul>
+
+
+            <div className='mt-8'>
+                <Pagination pageCount={pageCount}/>
+            </div>
         </div> 
         
     )
