@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation"
 import { getPost as getPostNotCached } from "@/lib/posts"
 import { cache } from "react"
+import Link from "next/link"
 
 const getPost = cache(
     async (slug) => await getPostNotCached(slug)
@@ -29,6 +30,9 @@ export default async function BlogPage({ params }) {
 
     return(
         <article className="prose dark:prose-invert">
+            <div className="flex space-x-2 mb-8">
+                {post.frontmatter.tags.map(tag => <Link key={tag} href={`/blog/?tags=${tag}`}>#{tag}</Link>)}
+            </div>
             {post.content}
         </article>
         
